@@ -91,4 +91,21 @@ static inline char* resolve_path(const char* relative_path, char* resolved_path)
     return realpath(relative_path, resolved_path);
 }
 
+/**
+ * Sanitizes the filename by replacing special characters with '-'.
+ * Keeps alphanumeric characters, dots (.), hyphens (-), and underscores (_).
+ * 
+ * @param str The string to sanitize (modified in place).
+ */
+static inline void sanitize_filename(char* str) {
+    if (!str) return;
+    for (char* p = str; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        // Allow alphanumeric, dots, hyphens, underscores, and high-bit bytes (UTF-8)
+        if (!isalnum(c) && c != '.' && c != '-' && c != '_' && c <= 127) {
+            *p = '-';
+        }
+    }
+}
+
 #endif
