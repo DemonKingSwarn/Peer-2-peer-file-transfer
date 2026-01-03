@@ -1,6 +1,7 @@
 #include "lib/header.h"
 #include "lib/ui.h"
 #include "lib/integrity.h"
+#include "lib/path_utils.h"
 #include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -152,17 +153,9 @@ void sender()
         EXIT_FAILURE;
     }
     printf(GB_GREEN "Connected to recvier.\n");
-    // Create a mutable copy of the file_path
-    char *filename = strrchr(file_path, '/');
-    if (filename == NULL)
-    {
-        strncpy(info.file_name, file_path, sizeof(info.file_name) - 1); // No slash found, the whole string is the filename
-    }
-    else
-    {
-        strncpy(info.file_name, filename + 1, sizeof(info.file_name) - 1); // Move past the '/' to get filename
-    }
-
+    // Extract filename using path_utils
+    const char *filename = get_filename(file_path);
+    strncpy(info.file_name, filename, sizeof(info.file_name) - 1);
     info.file_name[sizeof(info.file_name) - 1] = '\0'; // Safety null terminator
 
     uint8_t file_hash[SHA256_DIGEST_SIZE];
